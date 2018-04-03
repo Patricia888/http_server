@@ -33,10 +33,10 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 </html>''')
             return
 
-        elif parsed_path.path == '/cowsay':
+        elif parsed_path.path == '/cow':
             try:
-                cat = json.loads(parsed_qs['category'][0])
-            except KeyError:
+                message = json.loads(parsed_qs['msg'][0])
+            except (KeyError, json.decoder.JSONDecodeError):
                 self.send_response(400)
                 self.end_headers()
                 self.wfile.write(b'You did a bad thing')
@@ -44,7 +44,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
             self.send_response(200)
             self.end_headers()
-            self.wfile.write(b'we did the thing with the qs')
+            self.wfile.write(message.encode('utf8'))
             return
 
         else:
